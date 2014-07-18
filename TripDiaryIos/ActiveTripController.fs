@@ -2,21 +2,26 @@
 open System
 open MonoTouch.UIKit
 open System.Drawing
+open Domain
 
-type ActiveTripController() = 
+type ActiveTripController(tripDataAccess,trip:Trip) = 
     inherit UIViewController()
 
+    do base.Title <- trip.Name
 
+    let btnTakePhoto = Controls.button "activetrip_btn_takephoto" (fun _ -> ())
+
+    let cancelTripClicked sender eventArgs = printfn "activetrip_btn_canceltrip"
+    member this.XXX x = ()
     override this.ViewDidLoad() =
         base.ViewDidLoad()
+        this.View.BackgroundColor <- UIColor.White      
+               
+        let leftButtonBarItem = new UIBarButtonItem(localize "activetrip_btn_canceltrip", UIBarButtonItemStyle.Plain, cancelTripClicked)
+        this.NavigationItem.SetLeftBarButtonItem(leftButtonBarItem, true)
 
-        this.View.BackgroundColor <- UIColor.White
 
-        let btn = UIButton.FromType(UIButtonType.System)
-        btn.Frame <- RectangleF(0.f,0.f,200.f,200.f)
-        btn.SetTitle("Tlačítko2", UIControlState.Normal) 
-        this.Add(btn)
-
+               
 
     override this.ViewDidAppear(animated)=
         base.ViewDidAppear(animated)

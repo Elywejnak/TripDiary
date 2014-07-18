@@ -4,8 +4,13 @@ open SQLite
 
 type Database(dbPath:string) =
     
+    let createConnection() = new SQLiteConnection(dbPath)
     member this.CreateTablesIfNotExists (tableTypes:Type seq) =
-        let connection = new SQLiteConnection(dbPath)
+        let connection = createConnection()
         tableTypes |> Seq.iter (fun tableType -> connection.CreateTable(tableType) |> ignore)    
 
-    member this.Query<'a when 'a:(new : unit -> 'a)> sql = (new SQLiteConnection(dbPath)).Query<'a>(sql)     
+    member this.Query<'a when 'a:(new : unit -> 'a)> sql = createConnection().Query<'a>(sql)     
+
+    member this.Insert<'a> item =
+        createConnection().Insert(item)
+        

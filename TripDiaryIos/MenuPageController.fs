@@ -10,7 +10,7 @@ open VL
 type MenuPageController(tripDataAccess:TripDataAccess) as this = 
     inherit UIViewController()
 
-    let newTripController = new NewTripController()
+    let newTripController = new NewTripController(tripDataAccess)
              
     let newTripButton = Controls.button "menu_btn_new" (fun _ -> 
         this.NavigationController.PushViewController(newTripController, true)

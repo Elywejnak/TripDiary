@@ -28,10 +28,16 @@ type MainViewController() =
 
     override this.ViewWillAppear(animated) =
         base.ViewWillAppear(animated)
+//        let activeController = match tripDataAccess.GetLastTrip() with
+//                               | Some trip -> new UINavigationController(new ActiveTripController (tripDataAccess, trip)) :> UIViewController
+//                               | None -> new UINavigationController(new MenuPageController (tripDataAccess)) :> UIViewController
+        
         let activeController = match tripDataAccess.GetLastTrip() with
-                               | Some t -> new ActiveTripController () :> UIViewController
+                               | Some trip -> new ActiveTripController (tripDataAccess, trip) :> UIViewController
                                | None -> new MenuPageController (tripDataAccess) :> UIViewController
          
+         
+        //this.PresentViewController (new UINavigationController(activeController), true, fun _ ->())
         this.NavigationController.PushViewController(activeController, true)
          
     override this.ViewDidAppear(animated) =

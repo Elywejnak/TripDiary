@@ -3,22 +3,29 @@ open System
 open MonoTouch.UIKit
 open System.Drawing
 open VL
-type NewTripController() as this = 
+open TripDiaryLibrary
+
+type NewTripController(dataAccess:TripDataAccess) as this = 
     inherit UIViewController()
 
     let lblTripName = Controls.label "newtrip_lbl_name"
     let tvTripName = Controls.textview()
     let btnContinue = Controls.button "newtrip_btn_continue" (fun _ -> 
-        this.NavigationController.PopToRootViewController(true) |> ignore
+        let tripName = tvTripName.Text.Trim()
+        if not (String.IsNullOrEmpty(tripName)) then           
+             
+            match dataAccess.CreateTrip(tvTripName.Text) with
+            | true ->
+                this.NavigationController.PopToRootViewController(true) |> ignore
     )
 
     do
         this.Title <- localize "newtrip_title"
 
-//        tvTripName.Ended.Add (fun _ -> 
-//            //this.
-//            ()
-//        )
+        tvTripName.Ended.Add (fun _ -> 
+            
+            ()
+        )
 
 
     override this.ViewDidLoad() =
