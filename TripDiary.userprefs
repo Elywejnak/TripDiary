@@ -1,12 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhoneRetina.7.1" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="TripDiaryIosLibrary/DataAccess.fs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TripDiaryIos/MenuPageController.fs">
     <Files>
-      <File FileName="TripDiaryIos/NewTripController.fs" Line="19" Column="22" />
-      <File FileName="TripDiaryIos/MenuPageController.fs" Line="21" Column="48" />
-      <File FileName="TripDiaryIosLibrary/DataAccess.fs" Line="13" Column="33" />
-      <File FileName="TripDiaryIos/AppDelegate.fs" Line="22" Column="64" />
-      <File FileName="TripDiaryIosLibrary/Database.fs" Line="13" Column="5" />
+      <File FileName="TripDiaryIos/NewTripController.fs" Line="1" Column="1" />
+      <File FileName="TripDiaryIos/MenuPageController.fs" Line="21" Column="7" />
+      <File FileName="TripDiaryIosLibrary/DataAccess.fs" Line="9" Column="44" />
+      <File FileName="TripDiaryIos/AppDelegate.fs" Line="14" Column="48" />
+      <File FileName="TripDiaryIosLibrary/Database.fs" Line="12" Column="5" />
+      <File FileName="TripDiaryIosLibrary/Utils.fs" Line="5" Column="1" />
+      <File FileName="TripDiaryIos/ActiveTripController.fs" Line="14" Column="9" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

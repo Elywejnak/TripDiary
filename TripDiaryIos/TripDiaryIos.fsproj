@@ -113,11 +113,13 @@
     <None Include="Info.plist" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IosUtils.fs" />
     <Compile Include="VL.fs" />
+    <Compile Include="IosUtils.fs" />
+    <Compile Include="Controls.fs" />
     <Compile Include="NewTripController.fs" />
     <Compile Include="ActiveTripController.fs" />
     <Compile Include="MenuPageController.fs" />
+    <Compile Include="MainViewController.fs" />
     <Compile Include="AppDelegate.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
