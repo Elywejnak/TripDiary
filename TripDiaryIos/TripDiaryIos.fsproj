@@ -116,6 +116,7 @@
     <Compile Include="VL.fs" />
     <Compile Include="IosUtils.fs" />
     <Compile Include="Controls.fs" />
+    <Compile Include="WriteNoteController.fs" />
     <Compile Include="NewTripController.fs" />
     <Compile Include="ActiveTripController.fs" />
     <Compile Include="MenuPageController.fs" />
@@ -134,5 +135,11 @@
       <Project>{D345BAF4-1C81-4167-AC42-32AD5438A4B1}</Project>
       <Name>TripDiaryIosLibrary</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\addphoto%402x.png" />
+    <BundleResource Include="Resources\addphoto.png" />
+    <BundleResource Include="Resources\addnote%402x.png" />
+    <BundleResource Include="Resources\addnote.png" />
   </ItemGroup>
 </Project>

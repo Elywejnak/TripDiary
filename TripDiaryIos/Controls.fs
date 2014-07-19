@@ -22,3 +22,9 @@ let textview() =
     tv.Layer.BorderColor <- UIColor.Blue.CGColor
     tv.Layer.BorderWidth <- 1.f
     tv
+
+ 
+let barButtonItemWithImage imageName (clickHandler:obj->System.EventArgs->unit) =
+    let image = UIImage.FromBundle(imageName)
+    let barButtonItem = new UIBarButtonItem(image,UIBarButtonItemStyle.Plain, clickHandler)
+    barButtonItem
