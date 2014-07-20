@@ -14,12 +14,10 @@ type MainViewController() as this =
     inherit UIViewController()
 
     let dbPath = [| Environment.GetFolderPath(Environment.SpecialFolder.Personal); "tripdiary.db" |] |> Path.Combine
-    let database = new Database(dbPath)
-    do database.CreateTablesIfNotExists [typeof<Trip>;typeof<Note>]
-    let tripDataAccess = DataAccess(database) 
 
+    let dataAccess = DataAccess(dbPath) 
 
-    let newTripController = new NewTripController(tripDataAccess)             
+    let newTripController = new NewTripController(dataAccess)             
     let newTripButton = Controls.button "menu_btn_new" (fun _ -> 
         this.NavigationController.PushViewController(newTripController, true)
     )
@@ -43,9 +41,9 @@ type MainViewController() as this =
         this.NavigationController.NavigationBarHidden <- true
         base.ViewWillAppear(animated) 
 
-        match tripDataAccess.GetLastTrip() with
+        match dataAccess.GetLastTrip() with
         | Some trip -> 
-            let activeTripController = new ActiveTripController (tripDataAccess, trip) :> UIViewController
+            let activeTripController = new ActiveTripController (dataAccess, trip) :> UIViewController
             this.NavigationController.PresentViewController(new UINavigationController(activeTripController), true, null)
         | None -> ()
     

@@ -25,15 +25,8 @@ type NoteWriterController() as this =
     let addClick sender eventArgs = finished.Trigger(textview.Text)        
     let cancelClick sender eventArgs = canceled.Trigger()
 
-//    let onKeyboardNotification notification = ()
-//    let registerForKeyboardNotifications() =
-//        NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillHideNotification, onKeyboardNotification) |> ignore
-//        NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillShowNotification, onKeyboardNotification) |> ignore
-                
-
     member this.Canceled = canceled.Publish
     member this.Finished = finished.Publish
-
 
     override this.ViewDidLoad() =
         base.ViewDidLoad()

@@ -124,7 +124,6 @@
     <Compile Include="NoteWriterController.fs" />
     <Compile Include="NewTripController.fs" />
     <Compile Include="ActiveTripController.fs" />
-    <Compile Include="MenuPageController.fs" />
     <Compile Include="MainViewController.fs" />
     <Compile Include="AppDelegate.fs" />
   </ItemGroup>

@@ -6,13 +6,42 @@ open Domain
 open TripDiaryLibrary
 open VL
 open MonoTouch.MapKit
+open MonoTouch.CoreLocation
 
+type MapDelegate() =
+    inherit MKMapViewDelegate() 
+    let mutable updatedFirstTime = true
 
-type ActiveTripController(tripDataAccess:DataAccess,trip:Trip) as this = 
+    let userLocationUpdated = Event<_>()
+    member this.UserLocationUpdated = userLocationUpdated.Publish
+    override this.DidUpdateUserLocation(mapView,userLocation) =
+        userLocationUpdated.Trigger(userLocation)
+        mapView.CenterCoordinate <- userLocation.Coordinate
+
+        if updatedFirstTime then 
+            let region = MKCoordinateRegion.FromDistance(userLocation.Coordinate,300.,300.)
+            mapView.Region <- region
+            updatedFirstTime <- false
+       
+
+type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this = 
     inherit UIViewController()
 
-    let btnTakePhoto = Controls.button "activetrip_btn_takephoto" (fun _ -> ())
+    let mapDelegate = new MapDelegate()
+    let mutable lat,lng = 0.,0.
+    do 
+        mapDelegate.UserLocationUpdated.Add(fun location ->            
+            lat <- location.Coordinate.Latitude
+            lng <- location.Coordinate.Longitude
+            //update first trip position
+            if trip.StartLatitude = 0.0 && trip.StartLongitude = 0.0 then
+                trip.StartLatitude <- location.Coordinate.Latitude
+                trip.StartLongitude <- location.Coordinate.Longitude
+                dataAccess.UpdateTrip trip |> printfn "Trip update status: %b"
+        )
 
+    //let mutable trip = trip
+    let btnTakePhoto = Controls.button "activetrip_btn_takephoto" (fun _ -> ())
     let cancelTripClicked sender eventArgs = printfn "activetrip_btn_canceltrip"
 
     let takePhotoClicked sender eventArgs = 
@@ -40,6 +69,8 @@ type ActiveTripController(tripDataAccess:DataAccess,trip:Trip) as this =
  
     let addNoteClicked sender eventArgs = 
         printfn "addNoteClicked"
+        //location when note writing started
+        let noteLat,noteLng = lat,lng
         let noteWriterController = new NoteWriterController()
         noteWriterController.Canceled.Add (fun _ ->
             printfn "ActiveTripController.NoteWriter.Canceled"  
@@ -47,7 +78,7 @@ type ActiveTripController(tripDataAccess:DataAccess,trip:Trip) as this =
         )
         noteWriterController.Finished.Add (fun note ->
             printfn "ActiveTripController.NoteWriter.Finished with note=`%s`" note    
-            tripDataAccess.SaveNote trip.Id note |> printfn "Note saving status: %b"          
+            dataAccess.SaveNote trip.Id note noteLat noteLng |> printfn "Note saving status: %b"          
             this.NavigationController.PopViewControllerAnimated(true) |> ignore
         )
         this.NavigationController.PushViewController(noteWriterController, true)
@@ -75,12 +106,14 @@ type ActiveTripController(tripDataAccess:DataAccess,trip:Trip) as this =
         VL.packageInto this.View [ H [ !- 0. ; !@ tripNameLabel ; !- 0.] ] |> ignore
 
         let map = new MKMapView(UIScreen.MainScreen.Bounds)
-        this.Add(map)
-//        this.View.AddConstraint(topLayoutGuide this 0.f map)
-//        this.View.AddConstraint(bottomLayoutGuide this 0.f map)
-        
+        map.ShowsUserLocation <- true
+        map.ZoomEnabled <- true
 
+         
 
+        map.Delegate <- mapDelegate
+
+        this.Add(map) 
                
 
     override this.ViewDidAppear(animated)=
