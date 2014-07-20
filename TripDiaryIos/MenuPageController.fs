@@ -10,21 +10,15 @@ open VL
 type MenuPageController(tripDataAccess:DataAccess) as this = 
     inherit UIViewController()
 
-    let newTripController = new NewTripController(tripDataAccess)
-             
+    let newTripController = new NewTripController(tripDataAccess)             
     let newTripButton = Controls.button "menu_btn_new" (fun _ -> 
         this.NavigationController.PushViewController(newTripController, true)
     )
 
     override this.ViewDidLoad() =
         base.ViewDidLoad()         
-        this.View.BackgroundColor <- UIColor.White
-        this.NavigationController.NavigationBar.TintColor <- UIColor.White
-
+        Colors.styleController this
         this.Add(newTripButton)
-
-
-
 
         let constraints = [
             V [ !- 100. ; !@ newTripButton ]

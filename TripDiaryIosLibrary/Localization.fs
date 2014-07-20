@@ -2,14 +2,14 @@
 module Localization 
 let en = Map.ofList [
             "menu_btn_new", "Create new trip"
-            "newtrip_title", "Creating new trip"
+            "newtrip_title", "Create new trip"
             "newtrip_lbl_name", "Name your trip"
             "newtrip_btn_continue", "Continue"
             "activetrip_btn_takephoto", "Take photo"
-            "activetrip_btn_canceltrip", "Cancel trip"
+            "activetrip_btn_canceltrip", "End trip"
 
-            "notewriter_title", "Write your note"
-            "notewriter_add", "Add"
+            "notewriter_title", "Write new note"
+            "notewriter_add", "Save"
             "notewriter_cancel", "Cancel"
         ]  
          

@@ -22,7 +22,7 @@ let centerX view superView = center view superView NSLayoutAttribute.CenterX
 ///create vertical center constraint               
 let centerY view superView = center view superView NSLayoutAttribute.CenterY
 
-let topLayoutGuide (controller:UIViewController) view =    
+let topLayoutGuide (controller:UIViewController) constant view =    
     NSLayoutConstraint.Create(
         controller.TopLayoutGuide,
         NSLayoutAttribute.Bottom,
@@ -30,9 +30,10 @@ let topLayoutGuide (controller:UIViewController) view =
         view,
         NSLayoutAttribute.Top,
         1.f,
-        0.f
-    )                    
-let bottomLayoutGuide (controller:UIViewController) view =    
+        constant
+    )  
+                       
+let bottomLayoutGuide (controller:UIViewController) constant view =    
     NSLayoutConstraint.Create(
         controller.BottomLayoutGuide,
         NSLayoutAttribute.Top,
@@ -40,5 +41,5 @@ let bottomLayoutGuide (controller:UIViewController) view =
         view,
         NSLayoutAttribute.Bottom,
         1.f,
-        0.f
+        constant
     )  

@@ -4,6 +4,9 @@ open MonoTouch.UIKit
 open System.Drawing
 open Domain
 open TripDiaryLibrary
+open VL
+open MonoTouch.MapKit
+
 
 type ActiveTripController(tripDataAccess:DataAccess,trip:Trip) as this = 
     inherit UIViewController()
@@ -44,23 +47,39 @@ type ActiveTripController(tripDataAccess:DataAccess,trip:Trip) as this =
         )
         noteWriterController.Finished.Add (fun note ->
             printfn "ActiveTripController.NoteWriter.Finished with note=`%s`" note    
-            tripDataAccess.SaveNote trip.Id note |> printfn "Note saving status:%b"          
+            tripDataAccess.SaveNote trip.Id note |> printfn "Note saving status: %b"          
             this.NavigationController.PopViewControllerAnimated(true) |> ignore
         )
         this.NavigationController.PushViewController(noteWriterController, true)
-
     
+    let tripNameLabel = Controls.label trip.Name
+    do 
+        tripNameLabel.TextAlignment <- UITextAlignment.Center
+        tripNameLabel.Font <- Fonts.tripTitle
+
     override this.ViewDidLoad() =
         base.ViewDidLoad()
-        this.View.BackgroundColor <- UIColor.White      
-               
+        Colors.styleController this      
+
+        //Navigation controls       
         let leftButtonBarItem = new UIBarButtonItem(localize "activetrip_btn_canceltrip", UIBarButtonItemStyle.Plain, cancelTripClicked)
         this.NavigationItem.SetLeftBarButtonItem(leftButtonBarItem, true)
-                 
+                         
         let btnTakePhoto = Controls.barButtonItemWithImage "addphoto" takePhotoClicked
         let btnAddNote = Controls.barButtonItemWithImage "addnote" addNoteClicked 
-
         this.NavigationItem.SetRightBarButtonItems([|btnAddNote;btnTakePhoto|],true)
+
+        //Content controls         
+        this.Add tripNameLabel
+        this.View.AddConstraint(topLayoutGuide this -10.f tripNameLabel)      
+        VL.packageInto this.View [ H [ !- 0. ; !@ tripNameLabel ; !- 0.] ] |> ignore
+
+        let map = new MKMapView(UIScreen.MainScreen.Bounds)
+        this.Add(map)
+//        this.View.AddConstraint(topLayoutGuide this 0.f map)
+//        this.View.AddConstraint(bottomLayoutGuide this 0.f map)
+        
+
 
                
 

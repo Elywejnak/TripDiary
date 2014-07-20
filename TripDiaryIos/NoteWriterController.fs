@@ -37,8 +37,9 @@ type NoteWriterController() as this =
 
     override this.ViewDidLoad() =
         base.ViewDidLoad()
+        Colors.styleController this
         this.NavigationController.NavigationBar.Hidden <- false
-        this.View.BackgroundColor <- UIColor.White  
+
 
         this.NavigationItem.SetRightBarButtonItem(Controls.barButtinItemWithText (localize "notewriter_add") addClick, true)
         this.NavigationItem.SetLeftBarButtonItem(Controls.barButtinItemWithText (localize "notewriter_cancel") cancelClick, true)
@@ -50,8 +51,8 @@ type NoteWriterController() as this =
             H [ !- 20. ; !@ textview ; !- 20. ]
         ]  
         VL.packageInto this.View constraints |> ignore
-        this.View.AddConstraint(topLayoutGuide this textview)
-        this.View.AddConstraint(bottomLayoutGuide this textview)
+        this.View.AddConstraint(topLayoutGuide this 0.f textview)
+        this.View.AddConstraint(bottomLayoutGuide this 0.f textview)
     
     override this.ViewDidAppear(animated)=
         base.ViewDidAppear(animated)

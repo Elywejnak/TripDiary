@@ -12,10 +12,9 @@ type NewTripController(dataAccess:DataAccess) as this =
     let tvTripName = Controls.textview()
     let btnContinue = Controls.button "newtrip_btn_continue" (fun _ -> 
         let tripName = tvTripName.Text.Trim()
-        if not (String.IsNullOrEmpty(tripName)) then           
-             
+        if not (String.IsNullOrEmpty(tripName)) then             
             match dataAccess.CreateTrip(tvTripName.Text) with
-            | true -> this.NavigationController.PopToRootViewController(true) |> ignore
+            | true -> this.NavigationController.PopViewControllerAnimated (true) |> ignore
             | false -> printfn "trip was not inserted"
     )
 
@@ -30,7 +29,7 @@ type NewTripController(dataAccess:DataAccess) as this =
 
     override this.ViewDidLoad() =
         base.ViewDidLoad()
-        this.View.BackgroundColor <- UIColor.White
+        Colors.styleController this
 
         this.Add(lblTripName)
         this.Add(tvTripName)

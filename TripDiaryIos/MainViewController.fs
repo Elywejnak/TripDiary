@@ -10,7 +10,7 @@ open VL
 open TripDiaryLibrary
 open Domain
 
-type MainViewController() = 
+type MainViewController() as this = 
     inherit UIViewController()
 
     let dbPath = [| Environment.GetFolderPath(Environment.SpecialFolder.Personal); "tripdiary.db" |] |> Path.Combine
@@ -18,28 +18,41 @@ type MainViewController() =
     do database.CreateTablesIfNotExists [typeof<Trip>;typeof<Note>]
     let tripDataAccess = DataAccess(database) 
 
+
+    let newTripController = new NewTripController(tripDataAccess)             
+    let newTripButton = Controls.button "menu_btn_new" (fun _ -> 
+        this.NavigationController.PushViewController(newTripController, true)
+    )
+
     override this.ViewDidLoad() = 
-        base.ViewDidLoad()  
-        this.View.BackgroundColor <- UIColor.White      
+        base.ViewDidLoad()
+        Colors.styleController this
+        this.Add(newTripButton)
+
+        let constraints = [
+            V [ !- 100. ; !@ newTripButton ]
+        ]  
+        VL.packageInto this.View constraints |> ignore
+        this.View.AddConstraint(centerX newTripButton this.View)    
 
 
          
         //this.PresentViewController(new UINavigationController(activeController),true, (fun _ -> printfn "returned"))
 
     override this.ViewWillAppear(animated) =
-        base.ViewWillAppear(animated)
-//        let activeController = match tripDataAccess.GetLastTrip() with
-//                               | Some trip -> new UINavigationController(new ActiveTripController (tripDataAccess, trip)) :> UIViewController
-//                               | None -> new UINavigationController(new MenuPageController (tripDataAccess)) :> UIViewController
-        
-        let activeController = match tripDataAccess.GetLastTrip() with
-                               | Some trip -> new ActiveTripController (tripDataAccess, trip) :> UIViewController
-                               | None -> new MenuPageController (tripDataAccess) :> UIViewController
-         
-         
-        //this.PresentViewController (new UINavigationController(activeController), true, fun _ ->())
-        this.NavigationController.PushViewController(activeController, true)
-         
+        this.NavigationController.NavigationBarHidden <- true
+        base.ViewWillAppear(animated) 
+
+        match tripDataAccess.GetLastTrip() with
+        | Some trip -> 
+            let activeTripController = new ActiveTripController (tripDataAccess, trip) :> UIViewController
+            this.NavigationController.PresentViewController(new UINavigationController(activeTripController), true, null)
+        | None -> ()
+    
+    override this.ViewWillDisappear(animated)=
+        this.NavigationController.NavigationBarHidden <- false
+        base.ViewWillDisappear(animated)         
+    
     override this.ViewDidAppear(animated) =
         base.ViewDidAppear(animated)            
  

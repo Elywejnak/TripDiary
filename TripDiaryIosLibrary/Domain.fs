@@ -12,9 +12,8 @@ type Trip(id,name,createdAt,stoppedAt:DateTime option) =
     member val StoppedAt = stoppedAt |> optionToNullable with get,set
     [<Ignore>]
     member this.StoppedAtOption with get() = this.StoppedAt |> optionOfNullable
-
-
     new() = Trip(Guid.Empty,String.Empty,DateTime.MinValue,None)
+     
 
 [<AllowNullLiteral>]
 type Note(id,tripId,text,createdAt) =
@@ -24,6 +23,11 @@ type Note(id,tripId,text,createdAt) =
     member val Text = text with get,set
     member val CreatedAt = createdAt with get,set
 
-    new() = Note(Guid.Empty,Guid.Empty,"",DateTime.MinValue)
+    new() = Note(Guid.Empty,Guid.Empty,"",DateTime.MinValue)    
+
+ 
+
+
+ 
 
      
