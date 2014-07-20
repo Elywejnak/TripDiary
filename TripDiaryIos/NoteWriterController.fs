@@ -30,7 +30,7 @@ type NoteWriterController() as this =
 
     override this.ViewDidLoad() =
         base.ViewDidLoad()
-        Colors.styleController this
+        Colors.styleController this true
         this.NavigationController.NavigationBar.Hidden <- false
 
 

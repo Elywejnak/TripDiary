@@ -10,7 +10,9 @@ type NewTripController(dataAccess:DataAccess) as this =
 
     let lblTripName = Controls.label "newtrip_lbl_name"
     let tvTripName = Controls.textview()
-    do tvTripName.BecomeFirstResponder() |> ignore
+    do  tvTripName.BecomeFirstResponder() |> ignore
+
+
     let btnContinue = Controls.button "newtrip_btn_continue" (fun _ -> 
         let tripName = tvTripName.Text.Trim()
         if not (String.IsNullOrEmpty(tripName)) then      
@@ -23,15 +25,11 @@ type NewTripController(dataAccess:DataAccess) as this =
     do
         this.Title <- localize "newtrip_title"
 
-        tvTripName.Ended.Add (fun _ -> 
-            
-            ()
-        )
 
 
     override this.ViewDidLoad() =
         base.ViewDidLoad()
-        Colors.styleController this
+        Colors.styleController this true
 
         this.Add(lblTripName)
         this.Add(tvTripName)
@@ -48,3 +46,4 @@ type NewTripController(dataAccess:DataAccess) as this =
 
     override this.ViewDidAppear(animated)=
         base.ViewDidAppear(animated)
+ 

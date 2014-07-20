@@ -19,6 +19,10 @@ type DataAccess(dbPath:string) as this =
     member this.GetLastTrip() =          
         createConnection().Query<Trip> "select * from trip where stoppedat is null" |> Seq.tryPick Some 
 
+    member this.GetTrips() =
+        createConnection().Query<Trip> "select * from trip order by stoppedat desc"
+
+
     member this.CreateTrip name  = 
         let trip = new Trip(Guid.NewGuid(),name,DateTime.UtcNow,None)
         createConnection().Insert trip = 1

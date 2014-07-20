@@ -13,7 +13,8 @@ module Colors =
     let buttonBackground = UIColor.FromRGB(0,122,255)
     let logo = UIColor.Black
 
-    let styleController (controller:UIViewController) = 
+    let styleController (controller:UIViewController) useWhiteStatusBar =        
+        if useWhiteStatusBar then controller.NavigationController.NavigationBar.BarStyle <- UIBarStyle.Black
         controller.View.BackgroundColor <- background 
         controller.NavigationController.NavigationBar.BarTintColor <- navigationBarBarTint 
         controller.NavigationController.NavigationBar.TintColor <- navigationBarTint

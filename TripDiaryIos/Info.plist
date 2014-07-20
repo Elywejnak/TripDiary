@@ -16,5 +16,7 @@
 	<string>1</string>
 	<key>MinimumOSVersion</key>
 	<string>7.0</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
 </dict>
 </plist>

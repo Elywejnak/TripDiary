@@ -8,10 +8,19 @@ open VL
 open MonoTouch.MapKit
 open MonoTouch.CoreLocation
 
+type NoteAnnotation(coordinate:CLLocationCoordinate2D, title) =
+    inherit MKAnnotation()
+    let mutable mCoordinate = coordinate 
+    override this.Coordinate with get() = mCoordinate and set v = mCoordinate <- v
+    override this.Title with get() = title 
+
+    
+    
+
 type MapDelegate() =
     inherit MKMapViewDelegate() 
     let mutable updatedFirstTime = true
-    let pinAnnotationId = "PinAnnotation"
+    let noteAnnotationId = "noteAnnotationId"
 
 
     let userLocationUpdated = Event<_>()
@@ -28,12 +37,17 @@ type MapDelegate() =
     override this.GetViewForAnnotation(mapview,annotation) =
         match annotation with
         | :? MKUserLocation -> null
-        | _ -> 
-            match mapview.DequeueReusableAnnotation(pinAnnotationId) with
-            | null -> new MKPinAnnotationView(annotation, pinAnnotationId) :> MKAnnotationView
-            | existingView -> existingView     
-   
+        | :? NoteAnnotation ->
+                let view =  match mapview.DequeueReusableAnnotation(noteAnnotationId) with
+                            | null -> new MKPinAnnotationView(annotation, noteAnnotationId) :> MKAnnotationView
+                            | existingView -> existingView  
+                view.TintColor <- UIColor.Blue   
+                view.CanShowCallout <- true            
+                view
+        | _ -> null
 
+   
+        
        
 
 type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this = 
@@ -100,9 +114,7 @@ type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this =
             dataAccess.SaveNote trip.Id note noteLat noteLng |> printfn "Note saving status: %b"    
 
             //show note point on map      
-            let annotation = new MKPointAnnotation()
-            annotation.Title <- "Note"
-            annotation.Coordinate <- new CLLocationCoordinate2D(noteLat,noteLng)
+            let annotation = new NoteAnnotation(new CLLocationCoordinate2D(noteLat,noteLng), "Note: " + note)
             map.AddAnnotation(annotation)
 
             this.NavigationController.PopViewControllerAnimated(true) |> ignore
@@ -118,7 +130,7 @@ type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this =
 
     override this.ViewDidLoad() =
         base.ViewDidLoad()
-        Colors.styleController this      
+        Colors.styleController this true    
 
         //Navigation controls       
         let leftButtonBarItem = new UIBarButtonItem(localize "activetrip_btn_canceltrip", UIBarButtonItemStyle.Plain, cancelTripClicked)
