@@ -10,6 +10,7 @@ type NewTripController(dataAccess:DataAccess) as this =
 
     let lblTripName = Controls.label "newtrip_lbl_name"
     let tvTripName = Controls.textview()
+    do tvTripName.BecomeFirstResponder() |> ignore
     let btnContinue = Controls.button "newtrip_btn_continue" (fun _ -> 
         let tripName = tvTripName.Text.Trim()
         if not (String.IsNullOrEmpty(tripName)) then      
@@ -37,8 +38,8 @@ type NewTripController(dataAccess:DataAccess) as this =
         this.Add(btnContinue)
 
         let constraints = [
-            H [ !- 40. ; !@ lblTripName ; !- 40.]
-            H [ !- 40. ; !@ tvTripName ; !- 40.]
+            H [ !- 10. ; !@ lblTripName ; !- 10.]
+            H [ !- 10. ; !@ tvTripName ; !- 10.]
             V [ !- 80. ; !@ lblTripName ; !- 10. ; !@ tvTripName @@ [!!= 30.] ; !- 20. ; !@ btnContinue ]
         ]  
         VL.packageInto this.View constraints |> ignore

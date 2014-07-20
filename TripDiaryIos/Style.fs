@@ -8,7 +8,10 @@ module Colors =
     let navigationBarBarTint = UIColor.FromRGB(0,122,255)
     let navigationBarTint = UIColor.White
     let navigationBarTitleColor = UIColor.White
-
+    let tripTitle = UIColor.FromRGB(0,122,255)
+    let buttonText = UIColor.White
+    let buttonBackground = UIColor.FromRGB(0,122,255)
+    let logo = UIColor.Black
 
     let styleController (controller:UIViewController) = 
         controller.View.BackgroundColor <- background 
@@ -21,4 +24,7 @@ module Colors =
 
 module Fonts =
 
-    let tripTitle = UIFont.BoldSystemFontOfSize(20.f)
+    let tripTitle = UIFont.BoldSystemFontOfSize(26.f)
+    let button = UIFont.BoldSystemFontOfSize(26.f)
+    let label = UIFont.SystemFontOfSize(26.f)
+    let logo = UIFont.BoldSystemFontOfSize(60.f)

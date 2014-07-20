@@ -7,14 +7,20 @@ let button localizationKey clickHandler =
     let btn = UIButton.FromType(UIButtonType.System) 
     btn.SetTitle(localize localizationKey, UIControlState.Normal) 
     btn.TouchUpInside.Add clickHandler
-    btn.Layer.BorderColor <- UIColor.Blue.CGColor
-    btn.Layer.BorderWidth <- 1.f
-    btn.ContentEdgeInsets <- new UIEdgeInsets(5.f,5.f,5.f,5.f) 
+
+    btn.BackgroundColor <- Colors.buttonBackground
+    btn.SetTitleColor(Colors.buttonText, UIControlState.Normal)
+    btn.Font <- Fonts.button
+    btn.Layer.CornerRadius <- 2.f
+    btn.ContentEdgeInsets <- new UIEdgeInsets(10.f,10.f,10.f,10.f)
     btn
+
+     
 
 let label localizationKey = 
     let lbl = new UILabel()
     lbl.Text <- localize localizationKey 
+    lbl.Font <- Fonts.label
     lbl        
 
 let textview() =

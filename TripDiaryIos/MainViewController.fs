@@ -16,26 +16,33 @@ type MainViewController() as this =
     let dbPath = [| Environment.GetFolderPath(Environment.SpecialFolder.Personal); "tripdiary.db" |] |> Path.Combine
 
     let dataAccess = DataAccess(dbPath) 
-
-    let newTripController = new NewTripController(dataAccess)             
+    let newTripController = new NewTripController(dataAccess)  
+           
+               
     let newTripButton = Controls.button "menu_btn_new" (fun _ -> 
         this.NavigationController.PushViewController(newTripController, true)
-    )
+    ) 
+    
+    let tvLogo = Controls.label "TripDiary"
+    do  tvLogo.Font <- Fonts.logo
+        tvLogo.TextAlignment <- UITextAlignment.Center
+        tvLogo.TextColor <- Colors.logo
 
     override this.ViewDidLoad() = 
         base.ViewDidLoad()
         Colors.styleController this
+        this.Add(tvLogo)
         this.Add(newTripButton)
 
-        let constraints = [
-            V [ !- 100. ; !@ newTripButton ]
+        let constraints = [      
+            H [ !- 10. ; !@ tvLogo ; !- 10.]      
+            V [ !@ tvLogo ; !- 30. ; !@ newTripButton ]
         ]  
-        VL.packageInto this.View constraints |> ignore
-        this.View.AddConstraint(centerX newTripButton this.View)    
+        constraints |> List.iter (VL.addConstraints this.View) 
+        this.View.AddConstraint(topLayoutGuide this -10.f tvLogo)  
+        this.View.AddConstraint(centerX tvLogo this.View)
 
-
-         
-        //this.PresentViewController(new UINavigationController(activeController),true, (fun _ -> printfn "returned"))
+        this.View.AddConstraint(centerX newTripButton this.View)  
 
     override this.ViewWillAppear(animated) =
         this.NavigationController.NavigationBarHidden <- true

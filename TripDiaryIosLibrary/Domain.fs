@@ -14,7 +14,7 @@ type Trip(id,name,createdAt,stoppedAt:DateTime option) =
     member val CreatedAt = createdAt with get,set
     member val StoppedAt = stoppedAt |> optionToNullable with get,set
     [<Ignore>]
-    member this.StoppedAtOption with get() = this.StoppedAt |> optionOfNullable
+    member this.StoppedAtOption with get() = this.StoppedAt |> optionOfNullable and set v = this.StoppedAt <- optionToNullable v
     new() = Trip(Guid.Empty,String.Empty,DateTime.MinValue,None)
      
 

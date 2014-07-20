@@ -11,24 +11,38 @@ open MonoTouch.CoreLocation
 type MapDelegate() =
     inherit MKMapViewDelegate() 
     let mutable updatedFirstTime = true
+    let pinAnnotationId = "PinAnnotation"
+
 
     let userLocationUpdated = Event<_>()
     member this.UserLocationUpdated = userLocationUpdated.Publish
     override this.DidUpdateUserLocation(mapView,userLocation) =
         userLocationUpdated.Trigger(userLocation)
-        mapView.CenterCoordinate <- userLocation.Coordinate
 
         if updatedFirstTime then 
+            mapView.CenterCoordinate <- userLocation.Coordinate
             let region = MKCoordinateRegion.FromDistance(userLocation.Coordinate,300.,300.)
             mapView.Region <- region
             updatedFirstTime <- false
+
+    override this.GetViewForAnnotation(mapview,annotation) =
+        match annotation with
+        | :? MKUserLocation -> null
+        | _ -> 
+            match mapview.DequeueReusableAnnotation(pinAnnotationId) with
+            | null -> new MKPinAnnotationView(annotation, pinAnnotationId) :> MKAnnotationView
+            | existingView -> existingView     
+   
+
        
 
 type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this = 
     inherit UIViewController()
 
-    let mapDelegate = new MapDelegate()
+    //actual location
     let mutable lat,lng = 0.,0.
+
+    let mapDelegate = new MapDelegate()
     do 
         mapDelegate.UserLocationUpdated.Add(fun location ->            
             lat <- location.Coordinate.Latitude
@@ -39,6 +53,15 @@ type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this =
                 trip.StartLongitude <- location.Coordinate.Longitude
                 dataAccess.UpdateTrip trip |> printfn "Trip update status: %b"
         )
+
+    let map = new MKMapView(UIScreen.MainScreen.Bounds)
+    do 
+        map.ShowsUserLocation <- true
+        map.ZoomEnabled <- true
+        map.Delegate <- mapDelegate
+
+
+
 
     //let mutable trip = trip
     let btnTakePhoto = Controls.button "activetrip_btn_takephoto" (fun _ -> ())
@@ -53,14 +76,10 @@ type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this =
             imagePickerController.ShowsCameraControls <- true
             imagePickerController.FinishedPickingImage.Add (fun x ->
                 printfn "ActiveTripController.ImagePicker.FinishedPickingImage"
-
-
                 imagePickerController.DismissViewController(true, null)                         
             )
             imagePickerController.Canceled.Add (fun x ->
                 printfn "ActiveTripController.ImagePicker.Canceled"   
-
-
                 imagePickerController.DismissViewController(true, null)         
             )
             this.NavigationController.PresentViewController(imagePickerController, true, null)
@@ -78,14 +97,23 @@ type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this =
         )
         noteWriterController.Finished.Add (fun note ->
             printfn "ActiveTripController.NoteWriter.Finished with note=`%s`" note    
-            dataAccess.SaveNote trip.Id note noteLat noteLng |> printfn "Note saving status: %b"          
+            dataAccess.SaveNote trip.Id note noteLat noteLng |> printfn "Note saving status: %b"    
+
+            //show note point on map      
+            let annotation = new MKPointAnnotation()
+            annotation.Title <- "Note"
+            annotation.Coordinate <- new CLLocationCoordinate2D(noteLat,noteLng)
+            map.AddAnnotation(annotation)
+
             this.NavigationController.PopViewControllerAnimated(true) |> ignore
+
         )
         this.NavigationController.PushViewController(noteWriterController, true)
     
     let tripNameLabel = Controls.label trip.Name
     do 
         tripNameLabel.TextAlignment <- UITextAlignment.Center
+        tripNameLabel.TextColor <- Colors.tripTitle
         tripNameLabel.Font <- Fonts.tripTitle
 
     override this.ViewDidLoad() =
@@ -94,26 +122,25 @@ type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this =
 
         //Navigation controls       
         let leftButtonBarItem = new UIBarButtonItem(localize "activetrip_btn_canceltrip", UIBarButtonItemStyle.Plain, cancelTripClicked)
+        leftButtonBarItem.Clicked.Add (fun e -> 
+            trip.StoppedAt <- System.Nullable(DateTime.UtcNow)
+            dataAccess.UpdateTrip(trip) |> printfn "Trip update status: %b"
+            this.DismissViewController(true, null)
+            //this.NavigationController.PopViewControllerAnimated(true) |> ignore
+        )
         this.NavigationItem.SetLeftBarButtonItem(leftButtonBarItem, true)
                          
         let btnTakePhoto = Controls.barButtonItemWithImage "addphoto" takePhotoClicked
         let btnAddNote = Controls.barButtonItemWithImage "addnote" addNoteClicked 
         this.NavigationItem.SetRightBarButtonItems([|btnAddNote;btnTakePhoto|],true)
 
-        //Content controls         
-        this.Add tripNameLabel
-        this.View.AddConstraint(topLayoutGuide this -10.f tripNameLabel)      
+        //Content controls           
+        this.View <- map          
         VL.packageInto this.View [ H [ !- 0. ; !@ tripNameLabel ; !- 0.] ] |> ignore
-
-        let map = new MKMapView(UIScreen.MainScreen.Bounds)
-        map.ShowsUserLocation <- true
-        map.ZoomEnabled <- true
+        this.View.AddConstraint(topLayoutGuide this -10.f tripNameLabel)
+                 
 
          
-
-        map.Delegate <- mapDelegate
-
-        this.Add(map) 
                
 
     override this.ViewDidAppear(animated)=
