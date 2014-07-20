@@ -5,7 +5,7 @@ open System.Drawing
 open VL
 open TripDiaryLibrary
 
-type NewTripController(dataAccess:TripDataAccess) as this = 
+type NewTripController(dataAccess:DataAccess) as this = 
     inherit UIViewController()
 
     let lblTripName = Controls.label "newtrip_lbl_name"
@@ -15,8 +15,8 @@ type NewTripController(dataAccess:TripDataAccess) as this =
         if not (String.IsNullOrEmpty(tripName)) then           
              
             match dataAccess.CreateTrip(tvTripName.Text) with
-            | true ->
-                this.NavigationController.PopToRootViewController(true) |> ignore
+            | true -> this.NavigationController.PopToRootViewController(true) |> ignore
+            | false -> printfn "trip was not inserted"
     )
 
     do
@@ -38,11 +38,8 @@ type NewTripController(dataAccess:TripDataAccess) as this =
 
         let constraints = [
             H [ !- 40. ; !@ lblTripName ; !- 40.]
-            H [ !- 40. ; !@ tvTripName ; !- 40.]     
-
-            V [ !- 80. ; !@ lblTripName ; !- 10. ; !@ tvTripName @@ [!!= 30.] ; !- 20. ; !@ btnContinue ] 
-
-
+            H [ !- 40. ; !@ tvTripName ; !- 40.]
+            V [ !- 80. ; !@ lblTripName ; !- 10. ; !@ tvTripName @@ [!!= 30.] ; !- 20. ; !@ btnContinue ]
         ]  
         VL.packageInto this.View constraints |> ignore
         this.View.AddConstraint(centerX btnContinue this.View)

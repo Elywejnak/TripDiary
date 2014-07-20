@@ -7,7 +7,7 @@ open MonoTouch.Foundation
 open TripDiaryLibrary
 open VL
 
-type MenuPageController(tripDataAccess:TripDataAccess) as this = 
+type MenuPageController(tripDataAccess:DataAccess) as this = 
     inherit UIViewController()
 
     let newTripController = new NewTripController(tripDataAccess)
@@ -22,6 +22,9 @@ type MenuPageController(tripDataAccess:TripDataAccess) as this =
         this.NavigationController.NavigationBar.TintColor <- UIColor.White
 
         this.Add(newTripButton)
+
+
+
 
         let constraints = [
             V [ !- 100. ; !@ newTripButton ]

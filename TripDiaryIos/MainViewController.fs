@@ -8,15 +8,15 @@ open MonoTouch.Foundation
 open TripDiaryLibrary
 open VL
 open TripDiaryLibrary
+open Domain
 
 type MainViewController() = 
     inherit UIViewController()
 
     let dbPath = [| Environment.GetFolderPath(Environment.SpecialFolder.Personal); "tripdiary.db" |] |> Path.Combine
     let database = new Database(dbPath)
-    do database.CreateTablesIfNotExists [typeof<Domain.Trip>]
-    let tripDataAccess = TripDataAccess(database) 
-
+    do database.CreateTablesIfNotExists [typeof<Trip>;typeof<Note>]
+    let tripDataAccess = DataAccess(database) 
 
     override this.ViewDidLoad() = 
         base.ViewDidLoad()  

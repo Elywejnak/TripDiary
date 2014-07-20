@@ -28,3 +28,6 @@ let barButtonItemWithImage imageName (clickHandler:obj->System.EventArgs->unit) 
     let image = UIImage.FromBundle(imageName)
     let barButtonItem = new UIBarButtonItem(image,UIBarButtonItemStyle.Plain, clickHandler)
     barButtonItem
+
+let barButtinItemWithText localizationKey (clickHandler:obj->System.EventArgs->unit) =
+    new UIBarButtonItem(localize localizationKey, UIBarButtonItemStyle.Plain, clickHandler)

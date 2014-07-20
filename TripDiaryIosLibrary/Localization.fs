@@ -8,7 +8,9 @@ let en = Map.ofList [
             "activetrip_btn_takephoto", "Take photo"
             "activetrip_btn_canceltrip", "Cancel trip"
 
-            "writenote_title", "Write your note"
+            "notewriter_title", "Write your note"
+            "notewriter_add", "Add"
+            "notewriter_cancel", "Cancel"
         ]  
          
 let localize (key:string):string = match Map.tryFind key en with | Some v -> v | None -> key
