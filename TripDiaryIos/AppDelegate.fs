@@ -24,6 +24,9 @@ type AppDelegate () =
 module Main =
     [<EntryPoint>]
     let main args =
-        UIApplication.Main (args, null, "AppDelegate")
+        try
+            UIApplication.Main (args, null, "AppDelegate")
+        with ex -> 
+            printfn "ERROR:%s" (ex.ToString())
         0
 

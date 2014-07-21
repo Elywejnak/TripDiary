@@ -12,6 +12,7 @@ module Colors =
     let buttonText = UIColor.White
     let buttonBackground = UIColor.FromRGB(0,122,255)
     let logo = UIColor.Black
+    let photoAnnotationBorder = UIColor.FromRGB(76,217,100)
 
     let styleController (controller:UIViewController) useWhiteStatusBar =        
         if useWhiteStatusBar then controller.NavigationController.NavigationBar.BarStyle <- UIBarStyle.Black

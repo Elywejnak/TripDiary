@@ -122,6 +122,9 @@
     <Compile Include="Style.fs" />
     <Compile Include="Controls.fs" />
     <Compile Include="NoteWriterController.fs" />
+    <Compile Include="NoteDisplayController.fs" />
+    <Compile Include="PhotoDisplayController.fs" />
+    <Compile Include="TripDisplayController.fs" />
     <Compile Include="NewTripController.fs" />
     <Compile Include="ActiveTripController.fs" />
     <Compile Include="MainViewController.fs" />

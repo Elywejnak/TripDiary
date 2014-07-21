@@ -1,6 +1,8 @@
 ﻿[<AutoOpen>]
 module IosUtils
 
+open System
+open System.IO
 open MonoTouch.Foundation
 open MonoTouch.UIKit
 
@@ -43,3 +45,14 @@ let bottomLayoutGuide (controller:UIViewController) constant view =
         1.f,
         constant
     )  
+
+let fileInPersonalFolder filename = 
+    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), filename)
+
+let saveImage (name:string) (image:UIImage) = 
+    let imagePath = fileInPersonalFolder name
+    let imageData = image.AsJPEG()
+    let error = ref<NSError> null
+    imageData.Save(imagePath, false, error),!error
+
+        

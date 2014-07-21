@@ -15,7 +15,7 @@ type Trip(id,name,createdAt,stoppedAt:DateTime option) =
     member val StoppedAt = stoppedAt |> optionToNullable with get,set
     [<Ignore>]
     member this.StoppedAtOption with get() = this.StoppedAt |> optionOfNullable and set v = this.StoppedAt <- optionToNullable v
-    new() = Trip(Guid.Empty,String.Empty,DateTime.MinValue,None)
+    new() = Trip("",String.Empty,DateTime.MinValue,None)
      
 
 [<AllowNullLiteral>]
@@ -27,8 +27,18 @@ type Note(id,tripId,text,lat,lng,createdAt) =
     member val Latitude = lat with get,set
     member val Longitude = lng with get,set
     member val CreatedAt = createdAt with get,set
-    new() = Note(Guid.Empty,Guid.Empty,"",0.,0.,DateTime.MinValue)    
+    new() = Note("","","",0.,0.,DateTime.MinValue)    
 
+[<AllowNullLiteral>]
+type Photo(id,tripId,name,lat,lng,createdAt) =
+    [<PrimaryKey>]
+    member val Id = id with get,set
+    member val TripId = tripId with get,set
+    member val Name = name with get,set
+    member val Latitude = lat with get,set
+    member val Longitude = lng with get,set
+    member val CreatedAt = createdAt with get,set
+    new() = Photo("","","",0.,0.,DateTime.MinValue)    
  
 
 

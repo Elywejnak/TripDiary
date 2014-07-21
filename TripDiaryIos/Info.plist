@@ -15,7 +15,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1</string>
 	<key>MinimumOSVersion</key>
-	<string>7.0</string>
+	<string>6.1</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>
