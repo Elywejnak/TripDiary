@@ -8,94 +8,11 @@ open VL
 open MonoTouch.MapKit
 open MonoTouch.CoreLocation
 
-type NoteAnnotation(lat,lng,note) =
-    inherit MKAnnotation()
-    let mutable mCoordinate = new CLLocationCoordinate2D(lat,lng) 
-    override this.Coordinate with get() = mCoordinate and set v = mCoordinate <- v
-    override this.Title with get() = localize "activetrip_noteannotation_title" 
-    member this.Note with get() = note
-
-type PhotoAnnotation(lat,lng,thumbnailName,photoName) =
-    inherit MKAnnotation()
-    let mutable mCoordinate = new CLLocationCoordinate2D(lat,lng)  
-    override this.Coordinate with get() = mCoordinate and set v = mCoordinate <- v
-    override this.Title with get() = localize "activetrip_photoannotation_title"     
-    member this.PhotoName with get() = photoName
-    member this.ThumbnailName with get() = thumbnailName
-    
-
+open TripMapComponents
+ 
   
 
 
-type MapDelegate() =
-    inherit MKMapViewDelegate() 
-    let mutable updatedFirstTime = true
-    let noteAnnotationId = "noteAnnotationId"
-    let photoAnnotationId = "photoAnnotationId"
-
-
-    let noteAnnotationClicked = Event<string>()
-    let photoAnnotationClicked = Event<string>()
-
-    let userLocationUpdated = Event<_>()
-    member this.UserLocationUpdated = userLocationUpdated.Publish
-    member this.NoteAnnotationClicked = noteAnnotationClicked.Publish
-    member this.PhotoAnnotationClicked = photoAnnotationClicked.Publish
-
-    override this.DidUpdateUserLocation(mapView,userLocation) =
-        userLocationUpdated.Trigger(userLocation)
-
-        if updatedFirstTime then   
-            userLocation.Title <- ""          
-            mapView.CenterCoordinate <- userLocation.Coordinate
-            let region = MKCoordinateRegion.FromDistance(userLocation.Coordinate,300.,300.)
-            mapView.Region <- region
-            updatedFirstTime <- false
-
-    override this.GetViewForAnnotation(mapview,annotation) =
-        match annotation with
-        | :? MKUserLocation -> null      
-//            let view =  match mapview.DequeueReusableAnnotation("UserLocation") with
-//                        | null -> new MKPinAnnotationView(annotation, "UserLocation") :> MKAnnotationView
-//                        | existingView -> existingView   
-//            view.CanShowCallout <- false  
-//            view
-        | :? NoteAnnotation ->        
-            let noteAnnotation = annotation :?> NoteAnnotation         
-            let view =  match mapview.DequeueReusableAnnotation(noteAnnotationId) with
-                        | null -> new MKPinAnnotationView(annotation, noteAnnotationId) :> MKAnnotationView
-                        | existingView -> existingView   
-            view.CanShowCallout <- true   
-
-            let button = UIButton.FromType(UIButtonType.DetailDisclosure)
-            button.TouchUpInside.Add (fun _ -> 
-                noteAnnotationClicked.Trigger(noteAnnotation.Note)
-            )
-            view.RightCalloutAccessoryView <- button
-                     
-            view
-        | :? PhotoAnnotation ->
-            let photoAnnotation = annotation :?> PhotoAnnotation
-            let view =  match mapview.DequeueReusableAnnotation(photoAnnotationId) with
-                        | null -> new MKAnnotationView(annotation, photoAnnotationId)
-                        | existingView -> existingView  
-            let imageView = new UIImageView(UIImage.FromFile(fileInPersonalFolder photoAnnotation.ThumbnailName))
-            imageView.Layer.CornerRadius <- 5.f
-            imageView.Layer.BorderWidth <- 2.f
-            imageView.Layer.BorderColor <- Colors.photoAnnotationBorder.CGColor
-            imageView.Layer.MasksToBounds <- true
-            view.AddSubview(imageView) 
-            view.CenterOffset <- new PointF(-15.f,-15.f)
-            let button = UIButton.FromType(UIButtonType.DetailDisclosure)
-            button.TouchUpInside.Add (fun _ -> 
-                photoAnnotationClicked.Trigger(photoAnnotation.PhotoName)
-            )
-            view.RightCalloutAccessoryView <- button
-            
-            view.CanShowCallout <- true            
-            view
-    
-        | _ -> null
 
    
         
@@ -105,11 +22,12 @@ type ImagePickerDelegate(dataAccess:DataAccess, tripId, lat, lng, map:MKMapView)
     override this.FinishedPickingImage(picker, image, editingInfo) =
         printfn "ActiveTripController.ImagePicker.FinishedPickingImage"
         let imageName = Guid.NewGuid().ToString() + ".jpg"
-        match saveImage imageName image with
+        let scaledImage = image.Scale(new SizeF(image.Size.Width /2.f,image.Size.Height/2.f))
+        match saveImage imageName scaledImage with
         | (true, _) -> dataAccess.SavePhoto tripId imageName lat lng |> printfn "Photo saving status: %b"
         | (false, err) -> printfn "Error saving image %s because of %s" imageName err.LocalizedDescription
 
-        let thumbnail = image.Scale(new SizeF(30.f,30.f), 1.f)
+        let thumbnail = scaledImage.Scale(new SizeF(45.f,45.f), 1.f)
         let thumbnailName = "thumb_" + imageName
         match saveImage thumbnailName thumbnail with
         | (true, _) -> ()
@@ -130,7 +48,7 @@ type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this =
     //actual location
     let mutable lat,lng = 0.,0.
 
-    let mapDelegate = new MapDelegate()
+    let mapDelegate = new MapDelegate(true)
     do  mapDelegate.UserLocationUpdated.Add(fun location ->            
             lat <- location.Coordinate.Latitude
             lng <- location.Coordinate.Longitude
@@ -233,7 +151,6 @@ type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this =
 
     override this.ViewWillAppear(animated) =
         base.ViewWillAppear(animated) 
-        GC.Collect() |> ignore
             
     override this.ViewDidAppear(animated)=
         base.ViewDidAppear(animated)

@@ -121,6 +121,7 @@
     <Compile Include="IosUtils.fs" />
     <Compile Include="Style.fs" />
     <Compile Include="Controls.fs" />
+    <Compile Include="TripMapComponents.fs" />
     <Compile Include="NoteWriterController.fs" />
     <Compile Include="NoteDisplayController.fs" />
     <Compile Include="PhotoDisplayController.fs" />

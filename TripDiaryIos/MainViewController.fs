@@ -13,7 +13,8 @@ open Domain
 type TableSource(data:List<Trip>) =
     inherit UITableViewSource()
     let cellIdentifier = "TripCell"
-
+    let onRowSelected = new Event<Trip>()
+    member this.OnRowSelected with get() = onRowSelected.Publish
     override this.RowsInSection(tableview, section) = data.Count
 
     override this.GetCell(tableview, index) =
@@ -23,6 +24,13 @@ type TableSource(data:List<Trip>) =
         cell.TextLabel.Text <- data.[index.Row].Name
         cell.TextLabel.TextAlignment <- UITextAlignment.Center
         cell
+
+    override this.RowSelected(tableview, index) =
+        tableview.DeselectRow(index, true)
+        onRowSelected.Trigger(data.[index.Row])
+
+        
+        
 
 type MainViewController() as this = 
     inherit UIViewController()
@@ -47,8 +55,13 @@ type MainViewController() as this =
     let reloadTrips() =
         let trips = new List<Trip>(dataAccess.GetTrips())
         let tripsSource = new TableSource(trips)
+        tripsSource.OnRowSelected.Add(fun t ->
+            let tripDisplayController = new TripDisplayController(dataAccess,t)
+            this.NavigationController.PushViewController(tripDisplayController, true)
+            ()
+        )
         lvTrips.Source <- tripsSource 
-    do  reloadTrips() 
+        lvTrips.ReloadData()
 
         
 

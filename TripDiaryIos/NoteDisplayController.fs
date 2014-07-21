@@ -8,16 +8,14 @@ open VL
 open MonoTouch.Foundation
 
 type NoteDisplayController(note) as this = 
-    inherit UIViewController()
- 
+    inherit UIViewController() 
 
     do base.Title <- localize "notedisplay_title"
 
     let textview = Controls.textview()
     do
         textview.Text <- note
-        textview.Editable <- false
-        textview.BecomeFirstResponder() |> ignore
+        textview.Editable <- false 
         textview.Layer.BorderWidth <- 0.f
         textview.Font <- UIFont.SystemFontOfSize(18.f)
         this.AutomaticallyAdjustsScrollViewInsets <- false

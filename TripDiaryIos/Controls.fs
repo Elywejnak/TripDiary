@@ -25,8 +25,6 @@ let label localizationKey =
 
 let textview() =
     let tv = new UITextView()
-    tv.Layer.BorderColor <- UIColor.Blue.CGColor
-    tv.Layer.BorderWidth <- 1.f
     tv
 
  

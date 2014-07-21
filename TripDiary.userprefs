@@ -1,6 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Lucie - iPad" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="TripDiaryIos/Controls.fs">
+    <Files>
+      <File FileName="TripDiaryIos/NoteDisplayController.fs" Line="29" Column="59" />
+      <File FileName="TripDiaryIos/ActiveTripController.fs" Line="56" Column="46" />
+      <File FileName="TripDiaryIos/TripDisplayController.fs" Line="26" Column="11" />
+      <File FileName="TripDiaryIos/TripMapComponents.fs" Line="39" Column="52" />
+      <File FileName="TripDiaryIosLibrary/DataAccess.fs" Line="30" Column="17" />
+      <File FileName="TripDiaryIosLibrary/Domain.fs" Line="21" Column="21" />
+      <File FileName="TripDiaryIos/NewTripController.fs" Line="12" Column="36" />
+      <File FileName="TripDiaryIos/Controls.fs" Line="15" Column="63" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/elywejnak/dev/TripDiary/TripDiaryIos/AppDelegate.fs" line="30" column="47" />

@@ -16,7 +16,7 @@ type PhotoDisplayController(photoName) as this =
     let image = new UIImageView()
     do
         image.Image <- UIImage.FromFile(fileInPersonalFolder photoName)
-             
+        image.ContentMode <- UIViewContentMode.ScaleAspectFit             
     let backClick sender eventArgs = this.NavigationController.PopViewControllerAnimated(true) |> ignore
          
 

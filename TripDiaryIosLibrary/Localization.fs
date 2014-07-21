@@ -21,6 +21,8 @@ let en = Map.ofList [
 
             "photodisplay_back", "Back"
             "photodisplay_title", "Your photo"
+
+            "tripdisplay_btn_back", "Back"
             
         ]  
          
