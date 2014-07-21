@@ -9,13 +9,7 @@ open MonoTouch.MapKit
 open MonoTouch.CoreLocation
 
 open TripMapComponents
- 
-  
-
-
-
-   
-        
+         
 type ImagePickerDelegate(dataAccess:DataAccess, tripId, lat, lng, map:MKMapView) =
     inherit UIImagePickerControllerDelegate()
 
@@ -76,9 +70,6 @@ type ActiveTripController(dataAccess:DataAccess,trip:Trip) as this =
 
     let photos = dataAccess.GetPhotos (trip.Id)
     do  photos |> Seq.iter (fun p -> new PhotoAnnotation(p.Latitude, p.Longitude,"thumb_" + p.Name, p.Name) |> map.AddAnnotation )
-    
-
-
 
 
     //let mutable trip = trip
