@@ -22,11 +22,11 @@ This app allows you track your trips to nature, for culture or wherever you want
 </table>
 
 
-#issues:
+#Issues:
 * optimize memory usage - application crashes after adding few photos on map and opening notes or photos
 * make it more f# - application was written in a hurry, so now it needs cleanup
 
-#license
+#License
 [MIT license](http://opensource.org/licenses/MIT)
 
 
